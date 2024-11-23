@@ -6,41 +6,34 @@
 </head>
 <body>
 
-
 <h1>Videos</h1>
 
 <table id="videos_table">
   <thead>
-  <td>Cod.</td>
+  <tr>
+    <th>Cod.</th>
+    <!-- Puedes agregar más columnas aquí -->
+  </tr>
   </thead>
-
+  <tbody>
+  <!-- El cuerpo de la tabla se llenará dinámicamente -->
+  </tbody>
 </table>
 
-
-<a href="../index.html">
-  Inicio
-</a>
-</body>
-</html>
-
-
+<a href="../index.html">Inicio</a>
 
 <script>
-
-  find_all_videos();
-  function find_all_videos(){
+  function find_all_videos() {
     console.log("Listing all videos:");
 
-    var xhttp = new XMLHttpRequest();
-
+    const xhttp = new XMLHttpRequest();
     xhttp.open('GET', 'http://localhost:8080/videos', true);
 
     xhttp.onreadystatechange = function() {
-
       if (xhttp.readyState === XMLHttpRequest.DONE) {
-        var status = xhttp.status;
-        if (status === 0 || (status >= 200 && status < 400)) {//NO hay errores
-          var json = JSON.parse(xhttp.responseText);
+        const status = xhttp.status;
+        if (status === 0 || (status >= 200 && status < 400)) { // NO hay errores
+          const json = JSON.parse(xhttp.responseText);
           createTable(json, "videos_table");
         } else {
           console.log("Error");
@@ -50,30 +43,29 @@
     xhttp.send();
   }
 
-  function createTable(json, table) {
-    var tableBody = document.getElementById(table);
+  function createTable(json, tableId) {
+    const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
 
-    var child = tableBody.childElementCount;
-    for ( let row = 1; row < child; row++ ) {
-      tableBody.deleteRow(child-row);
+    // Eliminar filas antiguas
+    while (tableBody.firstChild) {
+      tableBody.removeChild(tableBody.firstChild);
     }
 
     // Populate table
     json.forEach((row) => {
-      var tr = document.createElement("tr");
+      const tr = document.createElement("tr");
       Object.values(row).forEach((cell) => {
-
-        var td = document.createElement("td");
+        const td = document.createElement("td");
         td.textContent = cell;
         tr.appendChild(td);
-
       });
-
       tableBody.appendChild(tr);
-
     });
-
-
   }
 
+  // Llamar a la función para listar los videos
+  find_all_videos();
 </script>
+
+</body>
+</html>
