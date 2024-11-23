@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h2>Adicionar nota</h2>
+
+<form>
+    <label for="code">Code:</label><br>
+    <input type="text" id="code" name="code" value=""><br>
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" value=""><br><br>
+    <input type="button" value="Guardar" class="btn btn-primary" onclick="add();">
+</form>
+
+<p id="message"></p>
+
+<a href="../index.html" class="link-secondary">Volver al inicio</a>
+
+<script>
+    function add() {
+        const code = document.getElementById("code").value;
+        const title = document.getElementById("title").value;
+
+        if (!code || !title) {
+            document.getElementById("message").textContent = "Por favor, completa todos los campos.";
+            return;
+        }
+
+        const newVideo = {
+            "code": code,
+            "title": title
+        };
+
+        console.log("Adding video:" + JSON.stringify(newVideo));
+
+        const xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+        xmlhttp.open("POST", "http://localhost:8080/videos", true);
+        xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+                const status = xmlhttp.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    document.getElementById("message").textContent = "Video agregado exitosamente!";
+                } else {
+                    document.getElementById("message").textContent = "Error al agregar el video.";
+                }
+            }
+        };
+
+        xmlhttp.send(JSON.stringify(newVideo));
+    }
+</script>
+
+</body>
+</html>
