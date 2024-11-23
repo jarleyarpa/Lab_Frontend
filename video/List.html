@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Videos</h1>
+<table id="videos_table">
+    <thead>
+    <tr>
+        <th>Cod.</th>
+
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+<a href="../index.html">Inicio</a>
+
+<script>
+    find_all_videos();
+
+    function find_all_videos() {
+        console.log("Listing all videos:");
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', 'http://localhost:8080/videos', true);
+
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState === XMLHttpRequest.DONE) {
+                const status = xhttp.status;
+                if (status === 0 || (status >= 200 && status < 400)) { // No hay errores
+                    try {
+                        const responseText = xhttp.responseText;
+                        if (responseText) {
+                            const json = JSON.parse(responseText);
+                            createTable(json, "videos_table");
+                        } else {
+                            console.log("Response is empty.");
+                        }
+                    } catch (e) {
+                        console.error("Error parsing JSON: ", e);
+                    }
+                } else {
+                    console.log("Error: ", status);
+                }
+            }
+        };
+        xhttp.send();
+    }
+
+    function createTable(json, tableId) {
+        const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+
+        while (tableBody.firstChild) {
+            tableBody.removeChild(tableBody.firstChild);
+        }
+
+        // Populate table
+        json.forEach((row) => {
+            const tr = document.createElement("tr");
+            Object.values(row).forEach((cell) => {
+                const td = document.createElement("td");
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+    }
+</script>
+</body>
+</html>
